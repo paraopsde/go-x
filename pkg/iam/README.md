@@ -1,0 +1,3 @@
+```
+% ./iamctl verify-authz USERNAME
+```
