@@ -58,12 +58,12 @@ func (akey *AsymKey) OpenSymKey(sealed string) (*Key, error) {
 		return nil, fmt.Errorf("failed to unmarshal: %v", err)
 	}
 	if sealmap["holder"] != akey.PublicHex() {
-		return nil, WrongHolder
+		return nil, fmt.Errorf("%w: %s != %s", WrongHolder, sealmap["holder"], akey.PublicHex())
 	}
 
 	cipher, err := base64.StdEncoding.DecodeString(sealmap["cipher"])
 	if err != nil {
-		return nil, fmt.Errorf("failed to decode cipher: %v", err)
+		return nil, fmt.Errorf("failed to base64 decode cipher: %v", err)
 	}
 	encrypterBytes, err := hex.DecodeString(sealmap["encrypter"])
 	if err != nil {

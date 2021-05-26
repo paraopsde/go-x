@@ -52,7 +52,7 @@ func initKey(keybytes []byte) (*Key, error) {
 	return key, nil
 }
 
-func countedNonce(nonce []byte, counter uint64) []byte {
+func CountedNonce(nonce []byte, counter uint64) []byte {
 	if len(nonce) < 8 {
 		return nil
 	}
@@ -157,7 +157,7 @@ func (key *Key) ChachaSealFromReader(plainReader io.Reader, cipherWriter io.Writ
 		}
 
 		// seal chunk
-		nonce := countedNonce(primeNonce, nonceInc)
+		nonce := CountedNonce(primeNonce, nonceInc)
 		nonceInc++
 		cipher := key.aead.Seal(nil, nonce, chunk[:bytesRead], nil)
 
