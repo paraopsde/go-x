@@ -34,6 +34,15 @@ func CtxLogOrPanic(ctx context.Context) *zap.Logger {
 	return log
 }
 
+func CtxLogOrInjectNew(ctx context.Context) (*zap.Logger, context.Context) {
+	log, ok := ctx.Value(contextKey("logger")).(*zap.Logger)
+	if !ok {
+		log = NewLogger()
+		return log, CtxWithLog(ctx, log)
+	}
+	return log, ctx
+}
+
 func CtxWithLog(ctx context.Context, log *zap.Logger) context.Context {
 	return context.WithValue(ctx, contextKey("logger"), log)
 }
