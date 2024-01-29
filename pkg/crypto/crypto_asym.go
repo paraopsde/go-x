@@ -21,7 +21,7 @@ type AsymKey struct {
 	public  nacl.Key
 }
 
-var WrongHolder = errors.New("wrong holder")
+var ErrWrongHolder = errors.New("wrong holder")
 
 func NewKeyPair() *AsymKey {
 	akey := &AsymKey{private: nacl.NewKey()}
@@ -58,7 +58,7 @@ func (akey *AsymKey) OpenSymKey(sealed string) (*Key, error) {
 		return nil, fmt.Errorf("failed to unmarshal: %v", err)
 	}
 	if sealmap["holder"] != akey.PublicHex() {
-		return nil, fmt.Errorf("%w: %s != %s", WrongHolder, sealmap["holder"], akey.PublicHex())
+		return nil, fmt.Errorf("%w: %s != %s", ErrWrongHolder, sealmap["holder"], akey.PublicHex())
 	}
 
 	cipher, err := base64.StdEncoding.DecodeString(sealmap["cipher"])

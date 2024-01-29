@@ -5,11 +5,16 @@ import (
 	"fmt"
 	"reflect"
 	"testing"
+
+	"github.com/stretchr/testify/require"
 )
 
 func TestChachaSealOpenSmall(t *testing.T) {
+	req := require.New(t)
+
 	// trivial test
 	k, err := NewKey()
+	req.NoError(err, "key creation should succeed")
 	if err != nil {
 		t.Errorf("failed to create key: %v", err)
 	}
@@ -22,25 +27,26 @@ func TestChachaSealOpenSmall(t *testing.T) {
 	fmt.Printf("chacha seal done: %d\n", len(cipher))
 
 	plain, err := k.ChachaOpen(cipher)
+	req.NoError(err, "chacha open should succeed")
 	if !reflect.DeepEqual(plain, infile) {
 		t.Errorf("crypt-decrypt cycled failed.")
 	}
 }
 func TestChachaSealOpenBigger(t *testing.T) {
+	req := require.New(t)
+
 	// trivial test
 	k, err := NewKey()
-	if err != nil {
-		t.Errorf("failed to create key: %v", err)
-	}
+	req.NoError(err, "key creation should succeed")
+
 	infile := bytes.NewBuffer(make([]byte, 23*1024*1024))
 	cipher, err := k.ChachaSeal(infile.Bytes())
-	if err != nil {
-		t.Errorf("failed to seal: %v", err)
-	}
+	req.NoError(err, "chacha seal should succeed")
 
 	fmt.Printf("chacha seal done: %d\n", len(cipher))
 
 	plain, err := k.ChachaOpen(cipher)
+	req.NoError(err, "chacha open should succeed")
 	if !reflect.DeepEqual(plain, infile.Bytes()) {
 		t.Errorf("crypt-decrypt cycled failed.")
 	}
@@ -74,5 +80,4 @@ func TestNonces(t *testing.T) {
 
 	shortNonce := [8]byte{}
 	fmt.Printf("nonce8+3: %x\n", CountedNonce(shortNonce[:], 3))
-
 }
